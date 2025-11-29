@@ -8,151 +8,19 @@
 </head>
 <body class="bg-light">
 
-  <div class="container py-4">
-    <div class="card shadow-sm p-4 mx-auto" style="max-width:600px;">
-      <h3 class="text-center mb-3">Absen / Form Kehadiran</h3>
+ <input type="text" id="noUjian" placeholder="Nomor Ujian"><br>
+<input type="text" id="nama" placeholder="Nama" readonly><br>
+<input type="text" id="kelas" placeholder="Kelas" readonly><br>
 
-      <form id="localForm" class="row g-3">
+<p>Keterangan:</p>
+<label><input type="radio" name="ket" value="Hadir"> Hadir</label><br>
+<label><input type="radio" name="ket" value="Terlambat"> Terlambat</label><br>
+<label><input type="radio" name="ket" value="Izin"> Izin</label><br>
+<label><input type="radio" name="ket" value="Sakit"> Sakit</label><br><br>
 
-        <div class="col-12 col-md-6">
-          <label class="form-label">Kelas</label>
-          <select id="kelas" class="form-select" required>
-            <option value="">-- Pilih Kelas --</option>
-          </select>
-        </div>
+<button onclick="submitForm()">Kirim</button>
+<script src="script.js"></script>
 
-        <div class="col-12 col-md-6">
-          <label class="form-label">Nomor Ujian</label>
-          <input id="nomor" class="form-control" placeholder="Masukkan Nomor Ujian" required>
-        </div>
-
-        <div class="col-12 col-md-6">
-          <label class="form-label">Nama</label>
-          <input id="nama" class="form-control" placeholder="Masukkan Nama (opsional)">
-        </div>
-
-        <div class="col-12 col-md-6">
-          <label class="form-label">Pukul</label>
-          <input id="pukul" class="form-control" readonly>
-        </div>
-
-        <div class="col-12">
-          <label class="form-label">Keterangan</label>
-          <select id="ket" class="form-select">
-            <option value="Hadir">Hadir</option>
-            <option value="Izin">Izin</option>
-            <option value="Sakit">Sakit</option>
-            <option value="Terlambat">Terlambat</option>
-            <option value="Alfa">Alfa</option>
-          </select>
-        </div>
-
-        <div class="col-12 d-flex justify-content-end gap-2">
-          <button type="reset" class="btn btn-outline-secondary">Reset</button>
-          <button type="submit" class="btn btn-primary">Kirim</button>
-        </div>
-
-        <div class="col-12"><p id="status" class="text-muted small"></p></div>
-      </form>
-    </div>
-  </div>
-
-<script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQMXPgT2QojHMsH3RmWxsH5f2pSpYvMPS8o2kZgzEJQ141oj_Mt1pI8HeuNO_UKXH5vTB_AsTwpzelP/pub?gid=0&single=true&output=csv";
-const FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdO9Y2B63WggJqznkfa42loBNY1R4YPOyRlg_4nWDk3u0kaHQ/formResponse";
-
-const ENTRY_NOMOR = "entry.1749392653";
-const ENTRY_NAMA  = "entry.654442501";
-const ENTRY_KELAS = "entry.1848626470";
-const ENTRY_PUKUL = "entry.871942555";
-const ENTRY_KETERANGAN = "entry.2057027565";
-
-let dataByClass = {};
-
-async function loadCSV() {
-  try {
-    const res = await fetch(CSV_URL);
-    const csv = await res.text();
-    const lines = csv.trim().split("\n");
-    const data = lines.slice(1).map(l => l.split(","));
-    data.forEach(r => {
-      const nomor = r[0].trim();
-      const nama  = r[1].trim();
-      const kelas = r[2].trim();
-      if (!dataByClass[kelas]) dataByClass[kelas] = [];
-      dataByClass[kelas].push({ nomor, nama });
-    });
-    populateClasses();
-  } catch (err) {
-    console.error("Error load CSV:", err);
-    document.getElementById("status").textContent = "Gagal memuat data siswa.";
-  }
-}
-
-function populateClasses() {
-  const sel = document.getElementById("kelas");
-  sel.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-  Object.keys(dataByClass).sort().forEach(k => {
-    sel.innerHTML += `<option value="${k}">${k}</option>`;
-  });
-}
-
-document.getElementById("kelas").addEventListener("change", () => {
-  const k = document.getElementById("kelas").value;
-  const selNama = document.getElementById("nama");
-  selNama.value = "";
-  document.getElementById("nomor").value = "";
-  if (!k) return;
-  // optional: otomatis isi nama jika hanya 1 siswa
-});
-
-function updateClock(){
-  const now = new Date();
-  const hh = String(now.getHours()).padStart(2,"0");
-  const mm = String(now.getMinutes()).padStart(2,"0");
-  const ss = String(now.getSeconds()).padStart(2,"0");
-  document.getElementById("pukul").value = hh + ":" + mm + ":" + ss;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-document.getElementById("localForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const nomor = document.getElementById("nomor").value.trim();
-  const nama  = document.getElementById("nama").value.trim();
-  const kelas = document.getElementById("kelas").value;
-  const pukul = document.getElementById("pukul").value;
-  const ket   = document.getElementById("ket").value;
-
-  if (!nomor || !kelas) {
-    alert("Nomor Ujian & Kelas harus diisi!");
-    return;
-  }
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = FORM_ACTION_URL;
-  form.style.display = "none";
-
-  function add(name, value) {
-    const inp = document.createElement("input");
-    inp.type = "hidden";
-    inp.name = name;
-    inp.value = value;
-    form.appendChild(inp);
-  }
-
-  add(ENTRY_NOMOR, nomor);
-  add(ENTRY_NAMA, nama);
-  add(ENTRY_KELAS, kelas);
-  add(ENTRY_PUKUL, pukul);
-  add(ENTRY_KETERANGAN, ket);
-
-  document.body.appendChild(form);
-  form.submit();
-});
-loadCSV();
-</script>
 
 </body>
 </html>
