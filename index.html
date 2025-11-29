@@ -1,26 +1,64 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <title>Absensi Siswa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Absen - SMK ITABA</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <style>
+    body { background:#f0f4ff; }
+    .card { border-radius:18px; }
+    .title { font-weight:700; }
+    input[readonly] { background:#e9ecef !important; }
+  </style>
 </head>
-<body class="bg-light">
+<body class="d-flex justify-content-center align-items-center vh-100">
 
- <input type="text" id="noUjian" placeholder="Nomor Ujian"><br>
-<input type="text" id="nama" placeholder="Nama" readonly><br>
-<input type="text" id="kelas" placeholder="Kelas" readonly><br>
+<div class="card p-4 shadow col-md-4 col-sm-10">
+  <h3 class="text-center title mb-3">Absensi Kelas</h3>
 
-<p>Keterangan:</p>
-<label><input type="radio" name="ket" value="Hadir"> Hadir</label><br>
-<label><input type="radio" name="ket" value="Terlambat"> Terlambat</label><br>
-<label><input type="radio" name="ket" value="Izin"> Izin</label><br>
-<label><input type="radio" name="ket" value="Sakit"> Sakit</label><br><br>
+  <div class="mb-3">
+    <label class="form-label">Nomor Ujian</label>
+    <input type="text" class="form-control" id="noUjian" placeholder="Masukkan nomor ujian">
+  </div>
 
-<button onclick="submitForm()">Kirim</button>
+  <div class="mb-3">
+    <label class="form-label">Nama</label>
+    <input type="text" class="form-control" id="nama" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Kelas</label>
+    <input type="text" class="form-control" id="kelas" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Keterangan</label>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ket" value="Hadir">
+      <label class="form-check-label">Hadir</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ket" value="Terlambat">
+      <label class="form-check-label">Terlambat</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ket" value="Izin">
+      <label class="form-check-label">Izin</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ket" value="Sakit">
+      <label class="form-check-label">Sakit</label>
+    </div>
+  </div>
+
+  <button onclick="submitForm()" class="btn btn-primary w-100">Kirim Absensi</button>
+  <p class="text-center mt-2 text-secondary small">Powered by Bootstrap + Google Form</p>
+</div>
+
 <script src="script.js"></script>
-
-
 </body>
 </html>
